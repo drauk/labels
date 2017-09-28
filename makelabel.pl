@@ -105,6 +105,7 @@ col2 := 0.70white;          % The dark colour.
 #------------------------------------------------------------------------------
 my $text_mp_mid = "";
 for (my $i = 1; $i <= $deft_n_columns; $i += 1) {
+    # NOTE: Should escape '"' as '\"' here to prevent MetaPost bugs.
     if (defined($lines_txt[$i])) {
         if ($lines_txt[$i] !~ m/<<</) {
             $text_mp_mid .= "label[$i] := \"$lines_txt[$i]\";\n";
