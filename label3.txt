@@ -1,0 +1,22 @@
+milk, skim milk
+juice, orange, no added sugar
+mineral water with 5% citrus
+soft drink, cola
+soft drink, lemonade
+fruit dessert, frozen wildberry
+fruit dessert, frozen, tropical
+fruit dessert, frozen, apricot
+fruit dessert, frozen strawberry
+ice cream, choc mint
+ice cream, boysenberry
+ice cream, rum'n'raisins
+ice cream, honey malt marble
+ice cream, mango, Ranieri
+ice cream, strawberry
+dessert, frozen, cappuccino
+ice cream, vanilla, Ranieri
+dessert, frozen, cappuccino
+ice cream, caramel, Ranieri
+ice cream, chocolate, Ranieri
+semolina
+milk

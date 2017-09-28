@@ -1,0 +1,22 @@
+burger, vegetarian, chick pea
+butter
+butter, unsalted, Farmland
+cabbage, green, Danish, <<< domestic, pointed, raw
+cabbage, red, raw
+capsicum, green, raw
+capsicum, red, raw
+capsicum, unknown type, raw
+toffee, caramels, soft
+carrot
+cashew, raw
+cashew, roasted, salted
+cauliflower, raw
+celery
+cheese, camembert
+cheese, cheddar, Farmland
+cheese, cheddar, mild, <<< tasty and vintage
+cheese, cottage, creamed
+cheese, cottage, plain, Bulla
+cheese, cottage, uncreamed
+cheese, cottage, <<< with garden salad, Bulla
+cheese, edam

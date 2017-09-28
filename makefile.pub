@@ -1,0 +1,37 @@
+# tex/labels/makefile.pub   2017-9-29   Alan U. Kennington.
+# $Id$
+# Some label printing software.
+# Just type "make -f makefile.pub label3.pdf" to make "label3.txt".
+# You can do this with any 22-line plain text file <filename>.txt.
+
+all:
+
+.SUFFIXES: .pdf .ps .dvi .tex .1 .mp .txt
+.PRECIOUS: %.pdf %.ps %.dvi %.tex %.1 %.mp
+
+MAKELABEL   = ./makelabel.pl
+MPOST       = mpost
+
+# Resolution for conversion of DVI file to PS file.
+RES         = -D 1200 -T 21.02cm,29.73cm
+
+.txt.mp:
+%.mp %.tex: %.txt
+	echo "-- Making $*.mp and $*.tex from $*.txt"
+	$(MAKELABEL) $*.txt
+%.1: %.mp
+	echo "-- Making $*.1 from $*.mp"
+	rm -f $*.mpx
+	$(MPOST) $*.mp
+%.dvi: %.1 %.tex
+	echo "-- Making $*.dvi from $*.tex"
+	tex $*.tex
+%.ps: %.dvi
+	echo "-- Making $*.ps from $*.dvi"
+	dvips $(RES) -o $*.ps $*.dvi
+%.pdf: %.ps
+	echo "-- Making $*.pdf from $*.ps"
+	ps2pdf $*.ps
+
+clean:
+	rm -f *.mp *.1 *.log *.tex *.dvi *.ps *.pdf
