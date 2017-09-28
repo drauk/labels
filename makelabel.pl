@@ -1,5 +1,5 @@
 #! /usr/bin/perl
-# tex/labels/makelabel.pl   2017-9-28   Alan U. Kennington.
+# tex/labels/makelabel.pl   2017-9-29   Alan U. Kennington.
 # $Id: tex/labels/makelabel.pl ad89f925e5 2017-09-28 06:10:44Z Alan U. Kennington $
 
 # This is a Perl script for making a label.
@@ -247,7 +247,7 @@ my $f_1 = "$head.1";
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 my $text_tex =
 "% $f_tex
-% Labels for pharmaceuticals. Generated from file \"$f\".
+% Labels generated from file \"$f\".
 
 \\input epsf
 
