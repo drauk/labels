@@ -1,6 +1,6 @@
 #! /usr/bin/perl
 # tex/labels/makelabel.pl   2017-9-29   Alan U. Kennington.
-# $Id: tex/labels/makelabel.pl ad89f925e5 2017-09-28 06:10:44Z Alan U. Kennington $
+# $Id: tex/labels/makelabel.pl 53beb71aa5 2017-09-29 11:52:53Z Alan U. Kennington $
 
 # This is a Perl script for making a label.
 # Usage: ./makelabel.pl <filename.txt>

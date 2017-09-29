@@ -1,12 +1,12 @@
 # tex/labels/makefile.pub   2017-9-29   Alan U. Kennington.
-# $Id: tex/labels/makefile.pub 317d25e8b0 2017-09-28 14:46:08Z Alan U. Kennington $
+# $Id: tex/labels/makefile.pub ba59a424f6 2017-09-29 12:23:59Z Alan U. Kennington $
 # Some label printing software.
 # Just type "make -f makefile.pub label3.pdf" to make "label3.txt".
 # You can do this with any 22-line plain text file <filename>.txt.
 
 # To create any other label-files, just create the text file "xyz.txt"
 # or whatever, and then type "make xyz.pdf".
-all: label1.pdf label2.pdf label3.pdf label4.pdf
+all: label3.pdf label4.pdf
 
 .SUFFIXES: .pdf .ps .dvi .tex .1 .mp .txt
 .PRECIOUS: %.pdf %.ps %.dvi %.tex %.1 %.mp
