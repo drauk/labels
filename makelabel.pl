@@ -132,7 +132,7 @@ my $text_mp_bot =
 n_labels := 22;
 
 % The choice of font.
-defaultfont := \"phvr8y\";
+defaultfont := \"phvr8r\";
 % defaultfont := \"cmr9\";
 
 % Dot and line widths.

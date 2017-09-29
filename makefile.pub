@@ -4,7 +4,9 @@
 # Just type "make -f makefile.pub label3.pdf" to make "label3.txt".
 # You can do this with any 22-line plain text file <filename>.txt.
 
-all:
+# To create any other label-files, just create the text file "xyz.txt"
+# or whatever, and then type "make xyz.pdf".
+all: label1.pdf label2.pdf label3.pdf label4.pdf
 
 .SUFFIXES: .pdf .ps .dvi .tex .1 .mp .txt
 .PRECIOUS: %.pdf %.ps %.dvi %.tex %.1 %.mp
