@@ -1,6 +1,6 @@
 #! /usr/bin/perl
-# tex/labels/makelabel.pl   2017-9-29   Alan U. Kennington.
-# $Id: tex/labels/makelabel.pl 53beb71aa5 2017-09-29 11:52:53Z Alan U. Kennington $
+# tex/labels/makelabel.pl   2017-10-1   Alan U. Kennington.
+# $Id: tex/labels/makelabel.pl 36168737c1 2017-09-30 14:19:28Z Alan U. Kennington $
 
 # This is a Perl script for making a label.
 # Usage: ./makelabel.pl <filename.txt>
@@ -59,6 +59,8 @@ my $n_columns = 0;
 my @lines_txt;
 while (my $line = readline($fhand)) {
     chomp($line);
+    $line =~ s/^\s*//;
+    $line =~ s/\s*$//;
     $n_lines += 1;
     $n_columns += 1;
     $lines_txt[$n_columns] = $line;
