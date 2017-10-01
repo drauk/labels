@@ -59,8 +59,12 @@ my $n_columns = 0;
 my @lines_txt;
 while (my $line = readline($fhand)) {
     chomp($line);
+#    print "line = \"$line\"\n";
+    # Trim the left and then the right.
     $line =~ s/^\s*//;
     $line =~ s/\s*$//;
+    # Reduce inter-word spaces to a single space.
+    $line =~ s/\s+/ /g;
     $n_lines += 1;
     $n_columns += 1;
     $lines_txt[$n_columns] = $line;
