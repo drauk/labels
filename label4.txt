@@ -14,7 +14,7 @@ cauliflower, raw
 celery
 cheese, camembert
 cheese, cheddar, Farmland
-cheese, cheddar, mild, <<< tasty and vintage
+cheese, "cheddar", mild, <<< "tasty" and vintage
 cheese, cottage, creamed
 cheese, cottage, plain, Bulla
 cheese, cottage, uncreamed

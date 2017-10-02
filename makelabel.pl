@@ -1,6 +1,6 @@
 #! /usr/bin/perl
-# tex/labels/makelabel.pl   2017-10-1   Alan U. Kennington.
-# $Id: tex/labels/makelabel.pl 36168737c1 2017-09-30 14:19:28Z Alan U. Kennington $
+# tex/labels/makelabel.pl   2017-10-3   Alan U. Kennington.
+# $Id: tex/labels/makelabel.pl f038672e9d 2017-10-02 13:59:26Z Alan U. Kennington $
 
 # This is a Perl script for making a label.
 # Usage: ./makelabel.pl <filename.txt>
@@ -108,27 +108,54 @@ col2 := 0.70white;          % The dark colour.
 % Blank labels should be given as the empty string, which is \"\".
 ";
 
+#-----------------------#
+#      quotequote       #
+#-----------------------#
+sub quotequote {
+    my ($str) = @_;
+    my $str_out = "";
+    if ($str =~ m/\"/) {
+        my @parts = split /\"/, $str;
+        for ($i = 0; $i <= $#parts; $i += 1) {
+            if ($i > 0) {
+                $str_out .= " & (char 34) & ";
+                }
+            $str_out .= "\"$parts[$i]\"";
+            }
+        }
+    else {
+        $str_out = "\"$str\"";
+        }
+    return $str_out;
+    } # End of subroutine quotequote.
+
 #------------------------------------------------------------------------------
 my $text_mp_mid = "";
 for (my $i = 1; $i <= $deft_n_columns; $i += 1) {
     # NOTE: Should escape '"' as '\"' here to prevent MetaPost bugs.
     if (defined($lines_txt[$i])) {
         if ($lines_txt[$i] !~ m/<<</) {
-            $text_mp_mid .= "label[$i] := \"$lines_txt[$i]\";\n";
+            # Single-row case.
+            my $rowA = quotequote($lines_txt[$i]);
+#            $text_mp_mid .= "label[$i] := \"$lines_txt[$i]\";\n";
+            $text_mp_mid .= "label[$i] := " . $rowA . ";\n";
             $text_mp_mid .= "label[100 + $i] := \"\";\n";
-            $text_mp_mid .= "label[200 + $i] := \"\";\n";
             }
         else {
+            # Double-row case.
             my ($text_l, $text_r) = split(/ *<<< */, $lines_txt[$i], 2);
-            $text_mp_mid .= "label[$i] := \"\";\n";
-            $text_mp_mid .= "label[100 + $i] := \"$text_l\";\n";
-            $text_mp_mid .= "label[200 + $i] := \"$text_r\";\n";
+            my $rowA = quotequote($text_l);
+            my $rowB = quotequote($text_r);
+#            $text_mp_mid .= "label[$i] := \"$text_l\";\n";
+#            $text_mp_mid .= "label[100 + $i] := \"$text_r\";\n";
+            $text_mp_mid .= "label[$i] := " . $rowA . ";\n";
+            $text_mp_mid .= "label[100 + $i] := " . $rowB . ";\n";
             }
         }
     else {
+        # Zero-row case.
         $text_mp_mid .= "label[$i] := \"\";\n";
         $text_mp_mid .= "label[100 + $i] := \"\";\n";
-        $text_mp_mid .= "label[200 + $i] := \"\";\n";
         }
     }
 
@@ -195,22 +222,16 @@ for i=1 upto n_labels:
     draw zz30--zz31--zz32--zz33--cycle;
     % Do the text.
     zz1 := zz0 + (0, -wsquare * (i - 0.5));
-    if label[i] <> \"\":
+    if label[100 + i] =  \"\":
+        % Single-row case.
         draw thelabel.rt(label[i] infont defaultfont, (0,0))
             rotated (angle_label - 90) shifted (zz1+(0, dx1));
-    elseif label[100 + i] <> \"\":
-        draw thelabel.rt(label[100 + i] infont defaultfont, (0,0))
+    else:
+        % Double-row case.
+        draw thelabel.rt(label[i] infont defaultfont, (0,0))
             rotated (angle_label - 90) shifted (zz1+(0, dx1+dsplit));
-        draw thelabel.rt(label[200 + i] infont defaultfont, (0,0))
+        draw thelabel.rt(label[100 + i] infont defaultfont, (0,0))
             rotated (angle_label - 90) shifted (zz1+(0, dx1-dsplit));
-        fi
-    if (label[i] <> \"\") and draw_arrow:
-        zz2 := zz1 + (-h1, 0);
-        zz3 := zz1 + (-h2, 0);
-%        pickup pencircle scaled penDOT;
-%        draw zz2;
-        pickup pencircle scaled penARROW;
-        drawarrow zz2--zz3;
         fi
     endfor
 
