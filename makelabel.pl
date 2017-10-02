@@ -1,6 +1,6 @@
 #! /usr/bin/perl
 # tex/labels/makelabel.pl   2017-10-3   Alan U. Kennington.
-# $Id: tex/labels/makelabel.pl f038672e9d 2017-10-02 13:59:26Z Alan U. Kennington $
+# $Id: tex/labels/makelabel.pl b60c3bc5af 2017-10-02 14:24:55Z Alan U. Kennington $
 
 # This is a Perl script for making a label.
 # Usage: ./makelabel.pl <filename.txt>
@@ -95,7 +95,6 @@ my $text_mp_top =
 % prologues := 1;
 
 beginfig(1);
-boolean draw_arrow;
 pair zz[];
 color col[];
 string label[];
@@ -115,7 +114,8 @@ sub quotequote {
     my ($str) = @_;
     my $str_out = "";
     if ($str =~ m/\"/) {
-        my @parts = split /\"/, $str;
+        # Use negative max number of fields to not delete trailing null string.
+        my @parts = split /\"/, $str, -1;
         for ($i = 0; $i <= $#parts; $i += 1) {
             if ($i > 0) {
                 $str_out .= " & (char 34) & ";
@@ -169,7 +169,6 @@ defaultfont := \"phvr8r\";
 % defaultfont := \"cmr9\";
 
 % Dot and line widths.
-penARROW := 0.5bp;
 penDOT := 2.5bp;
 penBDY := 0.5bp;
 penBOX := 0.5bp;
@@ -192,16 +191,10 @@ zz20 := (Xslope, Yslope);
 zz21 := zz20 rotated -90;
 angle_label := angle(zz20);
 
-draw_arrow := false;
-
 % - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 d1 := 12pt;
 d1h := d1 * sqrt(2);
-h1 := 1mm;                  % Arrow distance from text.
-len1 := 4mm;                % Arrow length.
-h2 := h1 + len1;
-dx1 := 0.1mm;               % Offset of text from arrows.
-gap1 := 1mm;
+dx1 := 0.1mm;               % Offset of text from base of label.
 zz0 := (50, 50);
 dsplit := 6bp;              % Offsets for a double-row column.
 
@@ -237,11 +230,7 @@ for i=1 upto n_labels:
 
 % - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 % Draw a bounding box.
-if draw_arrow:
-    zz10 := zz0 + (-h2 - gap1, 0);
-else:
-    zz10 := zz0;
-    fi
+zz10 := zz0;
 zz11 := zz10 + (0, -wsquares);
 zz12 := zz11 + zz21;
 zz13 := zz10 + zz21;
