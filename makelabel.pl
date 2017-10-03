@@ -1,11 +1,12 @@
 #! /usr/bin/perl
 # tex/labels/makelabel.pl   2017-10-3   Alan U. Kennington.
-# $Id: tex/labels/makelabel.pl b60c3bc5af 2017-10-02 14:24:55Z Alan U. Kennington $
+# $Id: tex/labels/makelabel.pl d0ec14b86e 2017-10-03 04:03:53Z Alan U. Kennington $
 
 # This is a Perl script for making a label.
 # Usage: ./makelabel.pl <filename.txt>
 
 my $deft_n_columns = 22;
+my $darkness = 30;          # Default darkness is 30%.
 
 my $n_args = $#ARGV + 1;
 if ($n_args != 1) {
@@ -18,17 +19,17 @@ if ($n_args != 1) {
 my $f = $ARGV[0];
 print "Reading file \"$f\"\n";
 if (! -e $f) {
-    print STDERR "Error: file \"$f\" does not exist\n";
+    print STDERR "ERROR: file \"$f\" does not exist\n";
     print STDERR "Usage: $0 <filename.txt>\n";
     exit(1);
     }
 if (! -f $f) {
-    print STDERR "Error: file \"$f\" is not a plain file\n";
+    print STDERR "ERROR: file \"$f\" is not a plain file\n";
     print STDERR "Usage: $0 <filename.txt>\n";
     exit(1);
     }
 if (-z $f) {
-    print STDERR "Error: file \"$f\" is an empty file\n";
+    print STDERR "ERROR: file \"$f\" is an empty file\n";
     print STDERR "Usage: $0 <filename.txt>\n";
     exit(1);
     }
@@ -39,7 +40,7 @@ my $n_names = $#names;
 my $t = $names[$n_names];
 # print "t = \"$t\"\n";
 if (lc($t) ne "txt") {
-    print STDERR "Error: file \"$f\" is not a .txt file\n";
+    print STDERR "ERROR: file \"$f\" is not a .txt file\n";
     print STDERR "Usage: $0 <filename.txt>\n";
     exit(1);
     }
@@ -49,10 +50,28 @@ my $head = $f;
 $head =~ s/(.*)\.[^\.]+/$1/;
 # print "head = \"$head\"\n";
 
+# Return empty string unless the given string is a valid decimal integer.
+#-----------------------#
+#      nonneg_dec       #
+#-----------------------#
+sub nonneg_dec {
+    my ($str) = @_;
+    my $str_out = $str;
+    if ($str !~ m/^[0-9]+$/) {
+        # Not all characters are decimal digits.
+        $str_out = "";
+        }
+    elsif (length($str) >= 2 && $str =~ m/^0/) {
+        # The first digit is "0", and there are more digits. Implies octal!
+        $str_out = "";
+        }
+    return $str_out;
+    } # End of subroutine nonneg_dec.
+
 #------------------------------------------------------------------------------
 # Read the file.
 open(my $fhand, '<', $f)
-    or die "Error: Could not open file \"$f\" for reading\n";
+    or die "ERROR: Could not open file \"$f\" for reading\n";
 
 my $n_lines = 0;
 my $n_columns = 0;
@@ -66,12 +85,43 @@ while (my $line = readline($fhand)) {
     # Reduce inter-word spaces to a single space.
     $line =~ s/\s+/ /g;
     $n_lines += 1;
-    $n_columns += 1;
-    $lines_txt[$n_columns] = $line;
 #    print "line = \"$line\"\n";
-    }
 
-print "Found $n_lines lines in file \"$f\".\n";
+    # Interpret comments and commands.
+    if ($line =~ m/^%%% /) {
+#        print "Comment line: \"$line\"\n";
+        my @comment = split / /, $line;
+        my $n_comment = $#comment;  # Number of fields after "%%%".
+        if ($n_comment >= 1) {
+            my $command = lc($comment[1]);
+            # There is no "switch" in standard old-style Perl.
+            if ($command eq "dark" || $command eq "darkness") {
+                if ($n_comment >= 2) {
+                    my $param = $comment[2];
+                    print "Found darkness parameter \"$param\"\n";
+                    my $param_dec = nonneg_dec($param);
+                    if ($param_dec eq "") {
+                        print "ERROR: DARKNESS = \"$param\". IGNORED.\n";
+                        }
+                    elsif ($param_dec > 100) {
+                        print "ERROR: DARKNESS too large: $param. IGNORED.\n";
+                        }
+                    else {
+                        print "Darkness set to \"$param_dec\"\n";
+                        $darkness = $param_dec;
+                        }
+                    }
+                }
+            }
+        }
+    else {
+        # A non-comment line.
+        $n_columns += 1;
+        $lines_txt[$n_columns] = $line;
+        }
+    } # End of per-line while-loop.
+
+print "Found $n_columns columns in $n_lines lines in file \"$f\".\n";
 my $n_columns_blank = 0;
 my $n_columns_ignore = 0;
 if ($n_columns < $deft_n_columns) {
@@ -99,8 +149,12 @@ pair zz[];
 color col[];
 string label[];
 
-col1 := white;              % The light colour.
-col2 := 0.70white;          % The dark colour.
+% The light colour is always pure white.
+col1 := white;
+
+% Percentage darkness for the dark columns.
+darkness := $darkness;
+col2 := (1-darkness/100)*white; % The dark colour.
 
 % - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 % All of the labels from 1 to 22 must be defined once and only once.
@@ -137,7 +191,6 @@ for (my $i = 1; $i <= $deft_n_columns; $i += 1) {
         if ($lines_txt[$i] !~ m/<<</) {
             # Single-row case.
             my $rowA = quotequote($lines_txt[$i]);
-#            $text_mp_mid .= "label[$i] := \"$lines_txt[$i]\";\n";
             $text_mp_mid .= "label[$i] := " . $rowA . ";\n";
             $text_mp_mid .= "label[100 + $i] := \"\";\n";
             }
@@ -146,8 +199,6 @@ for (my $i = 1; $i <= $deft_n_columns; $i += 1) {
             my ($text_l, $text_r) = split(/ *<<< */, $lines_txt[$i], 2);
             my $rowA = quotequote($text_l);
             my $rowB = quotequote($text_r);
-#            $text_mp_mid .= "label[$i] := \"$text_l\";\n";
-#            $text_mp_mid .= "label[100 + $i] := \"$text_r\";\n";
             $text_mp_mid .= "label[$i] := " . $rowA . ";\n";
             $text_mp_mid .= "label[100 + $i] := " . $rowB . ";\n";
             }
@@ -251,7 +302,7 @@ end
 #------------------------------------------------------------------------------
 print "Writing MetaPost file \"$f_mp\"...\n";
 open($fhand_mp, '>', $f_mp)
-    or die "Error: Could not open file \"$f_mp\" for writing\n";
+    or die "ERROR: Could not open file \"$f_mp\" for writing\n";
 
 print $fhand_mp $text_mp_top, $text_mp_mid, $text_mp_bot;
 # print $fhand_mp $text_mp_mid;
@@ -291,7 +342,7 @@ my $text_tex =
 #------------------------------------------------------------------------------
 print "Writing TeX file \"$f_tex\"...\n";
 open($fhand_tex, '>', $f_tex)
-    or die "Error: Could not open file \"$f_tex\" for writing\n";
+    or die "ERROR: Could not open file \"$f_tex\" for writing\n";
 
 print $fhand_tex $text_tex;
 
