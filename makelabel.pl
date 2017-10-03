@@ -1,12 +1,13 @@
 #! /usr/bin/perl
 # tex/labels/makelabel.pl   2017-10-3   Alan U. Kennington.
-# $Id: tex/labels/makelabel.pl d0ec14b86e 2017-10-03 04:03:53Z Alan U. Kennington $
+# $Id: tex/labels/makelabel.pl 05bb3a8c7d 2017-10-03 10:23:31Z Alan U. Kennington $
 
 # This is a Perl script for making a label.
 # Usage: ./makelabel.pl <filename.txt>
 
 my $deft_n_columns = 22;
 my $darkness = 30;          # Default darkness is 30%.
+my $deft_mpfont = "phvr8r"; # Default MetaPost font is Helvetica.
 
 my $n_args = $#ARGV + 1;
 if ($n_args != 1) {
@@ -109,6 +110,19 @@ while (my $line = readline($fhand)) {
                     else {
                         print "Darkness set to \"$param_dec\"\n";
                         $darkness = $param_dec;
+                        }
+                    }
+                }
+            elsif ($command eq "font") {
+                if ($n_comment >= 2) {
+                    my $param = $comment[2];
+                    print "Found font parameter \"$param\"\n";
+                    if ($param =~ m/\s/) {
+                        print "ERROR: FONT = \"$param\". IGNORED.\n";
+                        }
+                    else {
+                        print "Font set to \"$param\"\n";
+                        $deft_mpfont = $param;
                         }
                     }
                 }
@@ -216,7 +230,7 @@ my $text_mp_bot =
 n_labels := 22;
 
 % The choice of font.
-defaultfont := \"phvr8r\";
+defaultfont := \"$deft_mpfont\";
 % defaultfont := \"cmr9\";
 
 % Dot and line widths.
